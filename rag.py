@@ -85,25 +85,32 @@ def build_prompt(user_question, documents): # put the question and context toget
     )
     return prompt
 
-def llm(prompt, model="gpt-4o"):
-    response = openai_client.chat.completions.create(
-        model=model,
-        messages=[{"role": "user", "content": prompt}]
-    )
+def llm(prompt):
+    # response = openai_client.chat.completions.create(
+    #     model="gpt-4o",
+    #     messages=[{"role": "user", "content": prompt}]
+    # )
+    response = client.chat.completions.create(
+    model='phi3',
+    messages=[{"role": "user", "content": prompt}]
+)
     answer = response.choices[0].message.content
     return answer
 
 def rag(user_question):
     context_docs = retrieve_documents(user_question)
     prompt = build_prompt(user_question, context_docs)
-    return prompt
-    # answer = llm(prompt)
-    # return answer
+    # print(prompt)
+    answer = llm(prompt)
+    return answer
 
 
 
 
-# openai_client=OpenAI()
+client = OpenAI(
+    base_url='http://localhost:11434/v1/',
+    api_key='ollama',
+)
 
-rag("II just found out about the course. Can I still join?")
+rag("I just found out about the course. Can I still join?")
     
